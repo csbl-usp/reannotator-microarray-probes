@@ -1,0 +1,141 @@
+#!./perl
+#/usr/bin/perl
+#
+#INGLES/ENGLISH
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#http://www.gnu.org/copyleft/gpl.html
+#
+#PORTUGUES/PORTUGUESE                                CITAS,
+#COMERCIAIS OU DE ATENDIMENTO A UMA DETERMINADA FINALIDADE.  Consulte
+#a Licenca Publica Geral GNU para maiores detalhes.
+#http://www.gnu.org/copyleft/gpl.html
+#
+#Copyright (C) 2020
+#
+#Computational System Biology Laboratory - CSBL
+#Faculdade de Ciências Farmacêuticas 
+#Universidade de São Paulo - USP
+#Av. Prof. Lineu Prestes, 580 
+#Butantã
+#São Paulo - SP
+#Brasil
+#
+#Fone: +55 11 94071-4903
+#
+#Andre Nicolau Aquime Goncalves
+#anicolau85@gmail.com
+#http://<site do laboratorio>
+#$Id$
+
+# Script para <descrever o(s) objetivo(s)>
+# Andre Nicolau - <data atual>
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+use Getopt::Long;
+
+my $CURRENT_VERSION = "0.1";
+my $PROGRAM_NAME    = $0;
+$PROGRAM_NAME       =~ s|.*/||;
+
+my $dbdir = "../databases";
+
+my ($mapper, $genome, $readR1, $outputDir, $threads, $debug, $help, $version, $handle);
+$threads = 2;
+GetOptions( 'm|mapper=s'	=> \$mapper,
+            'g|genome=s'	=> \$genome,
+            '1|read-R1=s'	=> \$readR1,
+	    'o|output-dir=s'	=> \$outputDir,
+	    't|threads=i'	=> \$threads,
+            'd|debug'		=> \$debug,
+            'h|help'		=> \$help,
+            'v|version'		=> \$version
+          );
+my $boolean = 0;
+if ( $version ) {
+	print STDERR "$PROGRAM_NAME, Version $CURRENT_VERSION\n";
+	$boolean = 1;
+}
+if ( $help ) {
+	&PrintUsage();
+	$boolean = 1;
+}
+unless ( defined $mapper ) {
+	print "Error: Parameter (-m or --mapper) is not set.\n\n";
+	$boolean = 1;
+}
+unless ( defined $genome ) {
+	print "Error: Parameter (-g or --genome) is not set.\n\n";
+	$boolean = 1;
+}
+unless ( defined $outputDir ) {
+	print "Error: Parameter (-o or --output-dir) is not set.\n\n";
+	$boolean = 1;
+}
+unless ( defined $readR1 ) {
+	print "Error: Parameter (-1 or --read-R1) is not set.\n\n";
+	$boolean = 1;
+}
+if ( $boolean == 1 ) {
+	exit;
+}
+
+unless(-e "$outputDir" or mkdir("$outputDir", 0755)){die("Unable to create $outputDir\n")}
+
+if(-d "$dbdir/$genome") {
+	#my $genomeFile = `ls $dbdir/$genome/genome/fa`;# | sed 's/.* //'`;
+	#my @genomeFileArray = split /\n/, $genomeFile;
+	my $genomeBase = $genome;
+	#my $genomeBase = $genomeFileArray[0];
+	#$genomeBase =~ s/\..*//;
+
+
+	my $genomeDir = "$dbdir/$genome/genome/index/$mapper";
+	#print $base, "\n";
+
+	# bowtie2 -x /home/transcriptome-pipeline/datasets/index/GRCh38 -1 $dirtrim/$library/${library}_filtered_1_paired.fastq.gz -2 $dirtrim/$library/${library}_filtered_2_paired.fastq.gz | samtools view -bS - > $dirout/Aligned.sortedByCoord.out.bam
+
+	if($mapper eq "bowtie1") {
+		if($debug) {
+			print "bowtie --threads $threads -x $genomeDir/$genomeBase -f $readR1 | samtools view -bS - > $outputDir/mapped_reads_$mapper.bam\n";
+		} else {
+			print `bowtie --threads $threads -x $genomeDir/$genomeBase -f $readR1 | samtools view -bS - > $outputDir/mapped_reads_$mapper.bam`;
+		}
+	} elsif($mapper eq "bowtie2") {
+		if($debug) {
+			print "bowtie2 --threads $threads -x $genomeDir/$genomeBase -f -U $readR1 | samtools view -bS - > $outputDir/mapped_reads_$mapper.bam\n";
+		} else {
+			print `bowtie2 --threads $threads -x $genomeDir/$genomeBase -f -U $readR1 | samtools view -bS - > $outputDir/mapped_reads_$mapper.bam`;
+		}
+	} 
+} else {
+	print "Error: $genome directory doesnt exist, please execute the createReferenceDirectory script!\n";
+}
+
+
+
+
+
+sub PrintUsage {
+	my $errors = shift;
+
+	if ( defined( $errors ) ) {
+	print STDERR "\n$errors\n";
+	}
+
+	print STDERR <<'END';
+	Usage: <nome do script>.pl [options]
+
+	Options:
+	-i or --input <string>  : Input File
+	-h or --help            : Help
+	-v or --version         : Program version
+END
+	return;
+}
+

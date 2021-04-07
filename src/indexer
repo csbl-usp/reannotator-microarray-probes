@@ -1,0 +1,125 @@
+#!./perl
+#/usr/bin/perl
+#
+#INGLES/ENGLISH
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#http://www.gnu.org/copyleft/gpl.html
+#
+#PORTUGUES/PORTUGUESE                                CITAS,
+#COMERCIAIS OU DE ATENDIMENTO A UMA DETERMINADA FINALIDADE.  Consulte
+#a Licenca Publica Geral GNU para maiores detalhes.
+#http://www.gnu.org/copyleft/gpl.html
+#
+#Copyright (C) 2021
+#
+#Computational System Biology Laboratory - CSBL
+#Faculdade de Ciências Farmacêuticas 
+#Universidade de São Paulo - USP
+#Av. Prof. Lineu Prestes, 580 
+#Butantã
+#São Paulo - SP
+#Brasil
+#
+#Fone: +55 11 94071-4903
+#
+#Andre Nicolau Aquime Goncalves
+#anicolau85@gmail.com
+#http://<site do laboratorio>
+#$Id$
+
+# Script para <descrever o(s) objetivo(s)>
+# Andre Nicolau - <data atual>
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+use Getopt::Long;
+
+my $CURRENT_VERSION = "0.1";
+my $PROGRAM_NAME    = $0;
+$PROGRAM_NAME       =~ s|.*/||;
+
+my ($mapper, $genome, $base, $outputDir, $threads, $help, $version, $handle);
+$threads = 2;
+GetOptions( 'm|mapper=s'	=> \$mapper,
+            'g|genome=s'	=> \$genome,
+	    #'G|gtf-file=s'	=> \$gtfFile,
+            'b|base=s'		=> \$base,
+	    'o|output-dir=s'	=> \$outputDir,
+	    't|threads=i'	=> \$threads,
+            'h|help'		=> \$help,
+            'v|version'		=> \$version
+          );
+my $boolean = 0;
+if ( $version ) {
+	print STDERR "$PROGRAM_NAME, Version $CURRENT_VERSION\n";
+	$boolean = 1;
+}
+if ( $help ) {
+	&PrintUsage();
+	$boolean = 1;
+}
+unless ( defined $mapper ) {
+	print "Error: Parameter (-m or --mapper) is not set.\n\n";
+	$boolean = 1;
+}
+unless ( defined $genome ) {
+	print "Error: Parameter (-g or --genome) is not set.\n\n";
+	$boolean = 1;
+}
+unless ( defined $base ) {
+	print "Error: Parameter (-b or --base) is not set.\n\n";
+	$boolean = 1;
+}
+unless ( defined $outputDir ) {
+	print "Error: Parameter (-o or --output-dir) is not set.\n\n";
+	$boolean = 1;
+}
+if ( $boolean == 1 ) {
+	exit;
+}
+
+if(-e $genome ) {
+
+	if( $mapper eq "bowtie1" ) {
+		print `bowtie-build $genome $outputDir/$base`;
+		#print `bowtie-build --threads $threads $genome $outputDir/$base`;
+	} elsif( $mapper eq "bowtie2" ) {
+		print `bowtie2-build --threads $threads $genome $outputDir/$base`;
+	} elsif( $mapper eq "hisat2" ) {
+		print `hisat2-build --threads $threads $genome $outputDir/$base`;
+	} elsif( $mapper eq "STAR" ) {
+		print `STAR --runMode genomeGenerate --runThreadN $threads --genomeFastaFiles $genome --genomeDir $outputDir`;
+	}# elsif( $mapper eq "cellranger" ) {
+	#	my $gtfFilteredFile = $gtfFile =~ sed 's/.gtf/_filtered.gtf/';
+	#	print `cellranger mkgtf $gtfFile $gtfFilteredFile --attribute=gene_biotype:protein_coding`;
+	#	print `cellranger mkref --genome=$outputDir/$base --fasta=$genome --genes=$gtfFilteredFile`
+	#}
+}
+else {
+	print "Reference genome doesnt exist. Please, execute the createReferenceDirectory script.";
+}
+
+
+sub PrintUsage {
+	my $errors = shift;
+
+	if ( defined( $errors ) ) {
+	print STDERR "\n$errors\n";
+	}
+
+	print STDERR <<'END';
+	Usage: <nome do script>.pl [options]
+
+	Options:
+	-i or --input <string>  : Input File
+	-h or --help            : Help
+	-v or --version         : Program version
+END
+	return;
+}
+

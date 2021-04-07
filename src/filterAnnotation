@@ -1,0 +1,173 @@
+#!./perl
+#/usr/bin/perl
+#
+#INGLES/ENGLISH
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#http://www.gnu.org/copyleft/gpl.html
+#
+#PORTUGUES/PORTUGUESE                                CITAS,
+#COMERCIAIS OU DE ATENDIMENTO A UMA DETERMINADA FINALIDADE.  Consulte
+#a Licenca Publica Geral GNU para maiores detalhes.
+#http://www.gnu.org/copyleft/gpl.html
+#
+#Copyright (C) 2020
+#
+#Computational System Biology Laboratory - CSBL
+#Faculdade de Ciências Farmacêuticas 
+#Universidade de São Paulo - USP
+#Av. Prof. Lineu Prestes, 580 
+#Butantã
+#São Paulo - SP
+#Brasil
+#
+#Fone: +55 11 94071-4903
+#
+#Andre Nicolau Aquime Goncalves
+#anicolau85@gmail.com
+#http://<site do laboratorio>
+#$Id$
+
+# Script para <descrever o(s) objetivo(s)>
+# Andre Nicolau - <data atual>
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+use Getopt::Long;
+
+my $CURRENT_VERSION = "0.1";
+my $PROGRAM_NAME    = $0;
+$PROGRAM_NAME       =~ s|.*/||;
+
+my $dbdir = "../databases";
+
+my ($outputDir, $mapper, $platform, $threads, $debug, $help, $version, $handle);
+$threads = 2;
+GetOptions( 'M|mapped-dir=s'	=> \$outputDir,
+	    'm|mapper=s'	=> \$mapper,
+	    'p|platform=s'	=> \$platform,
+	    't|threads=i'	=> \$threads,
+            'd|debug'		=> \$debug,
+            'h|help'		=> \$help,
+            'v|version'		=> \$version
+          );
+my $boolean = 0;
+if ( $version ) {
+	print STDERR "$PROGRAM_NAME, Version $CURRENT_VERSION\n";
+	$boolean = 1;
+}
+if ( $help ) {
+	&PrintUsage();
+	$boolean = 1;
+}
+unless ( defined $mapper ) {
+	print "Error: Parameter (-m or --mapper) is not set.\n\n";
+	$boolean = 1;
+}
+unless ( defined $outputDir ) {
+	print "Error: Parameter (-M or --mapped-dir) is not set.\n\n";
+	$boolean = 1;
+}
+if ( $boolean == 1 ) {
+	exit;
+}
+
+
+my $excluded_biotype = "../parameters/excluded_biotype.tsv";
+my $included_biotype = "../parameters/included_biotype.tsv";
+
+open EXC, $excluded_biotype or die $!, "\n";
+my @excluded;
+while(my $biotype = <EXC>) {
+	chomp($biotype);
+	push(@excluded, $biotype);
+}
+close EXC;
+
+sub checkBiotype {
+	my @params  = @_;
+	my $biotype = $params[0];
+	my @array   = @{$params[1]};
+	my $value   = 0;
+
+	for(my $i = 0 ; $i <= $#array ; $i++) {
+		if($biotype eq $array[$i]) {
+			$value = 1;
+		}
+	}
+	return $value;
+
+}
+
+#print &checkBiotype("pseudogene", \@excluded), "\n";
+
+
+my %dataProbes;
+open DATA, "$outputDir/mapped_reads_$mapper.intb" or die $!, "\n";
+while(my $line = <DATA>) {
+	chomp($line);
+	my @cols = split /\t/, $line;
+	my $biotype = $cols[9-1];
+
+	## Same strand between mapped sequence and annotation
+	if($cols[6-1] eq $cols[13-1] && &checkBiotype($biotype, \@excluded) == 0) {
+		#print join("\t", $cols[6-1], $cols[13-1]), "\n";
+		#print $line, "\n";
+		my $probeId   = $cols[4-1];
+		my $desc      = $cols[15-1];
+		my $ensemblId = $1 if $desc =~ /ID=(.*);Name=/;
+		$ensemblId    = $1 if $ensemblId =~ /(.*);Parent=/;
+		$ensemblId    =~ s/(gene:|transcript:)//;
+		my $symbol    = $1 if $desc =~ /Name=(.*);biotype/;
+		my $biotype2  = $1 if $desc =~ /biotype=(.*)/;
+		$biotype2 =~ s/;.*//;
+		my $uniqueSymbol = $symbol;
+		$uniqueSymbol =~ s/\-.*//g;
+		push(@{$dataProbes{$probeId}{$uniqueSymbol}{"ensemblIds"}}, $ensemblId);
+		push(@{$dataProbes{$probeId}{$uniqueSymbol}{"biotypes2"}},  $biotype2);
+		push(@{$dataProbes{$probeId}{$uniqueSymbol}{"biotypes"}},   $biotype);
+		push(@{$dataProbes{$probeId}{$uniqueSymbol}{"symbols"}},    $symbol);
+		#push(@{$dataProbes{$probeId}{"uniqueSymbol"}},    $uniqueSymbol);
+		#print join("\t", $probeId, $biotype, $ensemblId, $symbol, $biotype2, $platform), "\n";
+	}
+}
+close DATA;
+
+print join("\t", "ProbeID", "Symbol", "EnsemblIDs", "Biotypes2", "Biotypes1", "Symbols"), "\n";
+foreach my $probeId (keys %dataProbes) {
+	foreach my $uniqueSymbol (keys %{$dataProbes{$probeId}}) {
+		my $ensemblIds = join("|", @{$dataProbes{$probeId}{$uniqueSymbol}{"ensemblIds"}});
+		my $biotypes2  = join("|", @{$dataProbes{$probeId}{$uniqueSymbol}{"biotypes2"}});
+		my $biotypes   = join("|", @{$dataProbes{$probeId}{$uniqueSymbol}{"biotypes"}});
+		my $symbols    = join("|", @{$dataProbes{$probeId}{$uniqueSymbol}{"symbols"}});
+		print join("\t", $probeId, $uniqueSymbol, $ensemblIds, $biotypes2, $biotypes, $symbols), "\n";
+	}
+}
+
+#print Dumper(\%dataProbes), "\n\n";
+
+
+
+
+sub PrintUsage {
+	my $errors = shift;
+
+	if ( defined( $errors ) ) {
+	print STDERR "\n$errors\n";
+	}
+
+	print STDERR <<'END';
+	Usage: <nome do script>.pl [options]
+
+	Options:
+	-i or --input <string>  : Input File
+	-h or --help            : Help
+	-v or --version         : Program version
+END
+	return;
+}
+

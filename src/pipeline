@@ -1,0 +1,50 @@
+#!/bin/bash
+
+platforms=../platforms
+outputDir=../results
+mapper=bowtie2
+genomeAlias=hsapiens
+threads=7
+force=$1
+
+echo "" > $outputDir/all_annotated_probes.tsv
+
+for platform in `ls $platforms`
+do
+	echo $platform
+	platformDir="$platforms/$platform"
+	
+	## Convert tabular file to sequence file (fasta format)
+	if [ ! -e $platformDir/probes.fasta ]
+	then
+		echo "Converting tabular to fasta"
+		./convertTabularToSequenceFile --input $platformDir/probe_sequence.tsv > $platformDir/probes.fasta
+	fi
+	
+	## Mapping probes sequence to the human genome
+	if [ ! -e $outputDir/$platform/mapped_reads_$mapper.bam ]
+	then
+		echo "Mapping sequences against reference genome"
+		./mapper --mapper $mapper --genome $genomeAlias --read-R1 $platformDir/probes.fasta --output-dir $outputDir/$platform --threads $threads
+	fi
+
+	## Annotation process
+	if [ ! -e $outputDir/$platform/mapped_reads_$mapper.intb ]
+	then
+		echo "Annotation mapped sequence to annotation file"
+		./annotation --mapper $mapper --mapped-dir $outputDir/$platform --genome $genomeAlias > $outputDir/$platform/mapped_reads_$mapper.intb
+	fi
+
+	## Filtering annotation
+	if [ ! -e $outputDir/$platform/annotated_probeids.tsv ]
+	then
+		echo "Filtering annotation"
+		./filterAnnotation --mapper $mapper --mapped-dir $outputDir/$platform --platform $platform > $outputDir/$platform/annotated_probeids.tsv
+	fi
+
+	cat $outputDir/$platform/annotated_probeids.tsv >> $outputDir/all_annotated_probes.tsv
+
+	echo "Reannotation process done!"
+	echo ""
+done
+

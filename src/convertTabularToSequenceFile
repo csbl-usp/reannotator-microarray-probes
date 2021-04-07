@@ -1,0 +1,111 @@
+#!./perl
+#/usr/bin/perl
+#
+#INGLES/ENGLISH
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#http://www.gnu.org/copyleft/gpl.html
+#
+#PORTUGUES/PORTUGUESE                                CITAS,
+#COMERCIAIS OU DE ATENDIMENTO A UMA DETERMINADA FINALIDADE.  Consulte
+#a Licenca Publica Geral GNU para maiores detalhes.
+#http://www.gnu.org/copyleft/gpl.html
+#
+#Copyright (C) 2021
+#
+#Computational System Biology Laboratory - CSBL
+#Faculdade de Ciências Farmacêuticas 
+#Universidade de São Paulo - USP
+#Av. Prof. Lineu Prestes, 580 
+#Butantã
+#São Paulo - SP
+#Brasil
+#
+#Fone: +55 11 94071-4903
+#
+#Andre Nicolau Aquime Goncalves
+#anicolau85@gmail.com
+#http:/csbiology.com/
+#$Id$
+
+# Script para converter dados tabulares em formato fasta
+# Andre Nicolau - 31/03/2021
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+use Getopt::Long;
+
+my $CURRENT_VERSION = "0.1";
+my $PROGRAM_NAME    = $0;
+$PROGRAM_NAME       =~ s|.*/||;
+
+my ($input, $colId, $colSeq, $help, $version, $handle);
+$colId = 1;
+$colSeq = 2;
+GetOptions( 'i|input=s'		=> \$input,
+	    'ci|col-id=i'	=> \$colId,
+	    'cs|col-seq=i'	=> \$colSeq,
+            'h|help'		=> \$help,
+            'v|version'		=> \$version
+          );
+my $boolean = 0;
+if ( $version ) {
+	print STDERR "$PROGRAM_NAME, Version $CURRENT_VERSION\n";
+	$boolean = 1;
+}
+if ( $help ) {
+	&PrintUsage();
+	$boolean = 1;
+}
+unless ( defined $input ) {
+	$handle = \*STDIN;
+}
+else {
+	open DATA, $input or die $!, "\n";
+	$handle = \*DATA;
+}
+if ( $boolean == 1 ) {
+	exit;
+}
+
+my %fasta;
+
+<$handle>;
+while( my $line = <$handle> ) {
+        chomp( $line );
+	$line =~ s/"//g;
+	$line =~ s/\r\n$/\n/g;
+	my @cols = split /\t/, $line;
+	$fasta{$cols[$colId-1]} = $cols[$colSeq-1];
+}
+close $handle;
+
+foreach my $id (keys %fasta) {
+	print join("\n", ">$id", $fasta{$id}), "\n";
+}
+
+
+sub PrintUsage {
+	my $errors = shift;
+
+	if ( defined( $errors ) ) {
+	print STDERR "\n$errors\n";
+	}
+
+	print STDERR <<'END';
+	Usage: convertTabularToSequenceFile.pl [options]
+
+	Options:
+	-i or --input <string>     : Input Tabular File
+	-ci or --col-id <integer>  : Specify which column corresponds to ID
+	-cq or --col-seq <integer> : Specify which column corresponds to SEQUENCE
+	-h or --help               : Help
+	-v or --version            : Program version
+END
+	return;
+}
+

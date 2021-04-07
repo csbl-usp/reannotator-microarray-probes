@@ -1,0 +1,99 @@
+#!/bin/sh
+
+if [ ! -L perl ]
+then
+	perlPath=`which perl`
+	ln -s $perlPath perl
+fi
+
+#echo "Define alias name to the new genome reference (eg hsapiens, mmusculus, ...):"
+#read alias
+alias=hsapiens
+
+#dbdir1=`cat ../parameters/database_directory.txt`
+#if [ ! -z $dbdir1 ]
+#then
+#	echo "Delete the file ../parameters/database_directory.txt"
+#	exit
+#else
+#	#echo "Define a path for database directory (eg /mnt/databases/)"
+#	#read dbdir1
+	dbdir1=../databases
+#fi
+
+dbdir="$dbdir1/$alias"
+
+if [ ! -d $dbdir ]
+then
+	mkdir -p $dbdir/genome/fa
+	mkdir -p $dbdir/genome/index/bowtie1
+	mkdir -p $dbdir/genome/index/bowtie2
+	mkdir -p $dbdir/annotation
+fi
+
+echo $dbdir1 > ../parameters/database_directory.txt
+
+#echo "Do you want download genome now or manually later? (Now or Later):"
+#read downloadGenome
+downloadGenome="Now"
+
+if [ $downloadGenome = "Now" ]
+then
+
+	if [ ! -L $dbdir/genome/fa/${alias}.fa ]
+	then
+		touch $dbdir/genome/fa/Homo_sapiens_chrs.fa
+		for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT
+		do
+			wget -O $dbdir/genome/fa/Homo_sapiens_chr${i}.fa.gz http://ftp.ensembl.org/pub/release-103/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.chromosome.${i}.fa.gz
+			gunzip $dbdir/genome/fa/Homo_sapiens_chr${i}.fa.gz
+			cat $dbdir/genome/fa/Homo_sapiens_chr${i}.fa >> $dbdir/genome/fa/Homo_sapiens_chrs.fa
+			rm $dbdir/genome/fa/Homo_sapiens_chr${i}.fa
+		done
+
+		cd $dbdir/genome/fa/
+		ln -s Homo_sapiens_chrs.fa ${alias}.fa
+
+		#echo "$dbdir/genome/fa/${alias}.fa" >> $dbdir/downloads_path.txt
+	fi
+
+	echo "Do you want index genome? (Yes or No):"
+	read indexGenome
+	#indexGenome="Yes"
+	if [ $indexGenome = "Yes" ]
+	then
+		#echo "How many cores to the processing?"
+		#read cores
+		totalcores=`cat /proc/cpuinfo | grep "cpu cores" | sort | uniq | sed 's/.*\: //'`
+		cores=$((totalcores-1))
+
+		for mapper in bowtie1 bowtie2
+		do
+			echo "Indexing genome to $mapper"
+			./indexer --mapper "$mapper" --genome "$dbdir/genome/fa/${alias}.fa" --base $alias --output-dir $dbdir/genome/index/$mapper/ --threads $cores
+		done
+	fi
+fi
+
+#echo "Do you want download genome annotation now or manually later? (Now or Later):"
+#read downloadAnnotation
+downloadAnnotation="Now"
+
+if [ $downloadAnnotation = "Now" ]
+then
+	if [ ! -e $dbdir/annotation/${alias}.gff ]
+	then
+		wget -O $dbdir/annotation/Homo_sapiens.gff.gz http://ftp.ensembl.org/pub/release-103/gff3/homo_sapiens/Homo_sapiens.GRCh38.103.chr.gff3.gz
+
+		gunzip $dbdir/annotation/Homo_sapiens.gff.gz
+		cd $dbdir/annotation
+		ln -s Homo_sapiens.gff ${alias}.gff
+
+		#cd $dbdir/../../src
+
+		#echo $dbdir/annotation/${alias}.gff >> $dbdir/downloads_path.txt
+	fi
+fi
+
+
+
