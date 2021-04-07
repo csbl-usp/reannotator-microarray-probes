@@ -193,7 +193,7 @@ $ cd /home/reannotator_microarray_probes/src
 $ conda activate reannotator
 ```
 
-Execute same steps from the [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
+Execute the same steps from the [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
 
 
 ## For Windows system
