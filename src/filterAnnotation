@@ -137,7 +137,7 @@ while(my $line = <DATA>) {
 }
 close DATA;
 
-print join("\t", "ProbeID", "Symbol", "EnsemblIDs", "Biotypes2", "Biotypes1", "Symbols"), "\n";
+print join("\t", "ProbeID", "Symbol", "EnsemblIDs", "Biotypes2", "Biotypes1", "Symbols", "GPLIds"), "\n";
 foreach my $probeId (keys %dataProbes) {
 	foreach my $uniqueSymbol (keys %{$dataProbes{$probeId}}) {
 		my $ensemblIds = join("|", @{$dataProbes{$probeId}{$uniqueSymbol}{"ensemblIds"}});
