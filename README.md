@@ -61,7 +61,7 @@ by running conda init? [yes|no]
 rm Miniconda3.sh
 ```
 
-Close and open your terminal to activated the conda base environment.
+**Important!!!** Close and open your terminal to activated the conda base environment.
 
 
 ### Update Conda using the command line:
@@ -77,7 +77,7 @@ $ conda install wget
 
 ## Clone the reannotator github repository
 ```
-$ git clone https://github.com/csbl-usp/reannotator-microarray-probes.git
+$ git clone https://github.com/nicolau/reannotator_microarray_probes.git
 ```
 
 ### Entry on the source directory it contains all scripts
@@ -95,6 +95,7 @@ $ chmod 755 *
 $ conda env create --file ../parameters/reannotator_env.yml
 $ conda activate reannotator
 ```
+**Important!!!** Make sure the reannotator environment are active or execute the command 'conda activate reannotator'.
 
 
 ## Prepare human genome sequence and mapper index
@@ -102,6 +103,8 @@ $ conda activate reannotator
 ```
 $ ./createReferenceDirectory
 ```
+The reference genome used for this pipeline is release-103 from ENSEMBL database.
+**Under construction** How to change the human reference genome for newer or oldest version.
 
 ## Prepare GPL sequence file. Show a platforms structure with tree command:
 ```
@@ -193,7 +196,7 @@ $ cd /home/reannotator_microarray_probes/src
 $ conda activate reannotator
 ```
 
-Execute the same steps from the [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
+Execute same steps from the [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
 
 
 ## For Windows system
