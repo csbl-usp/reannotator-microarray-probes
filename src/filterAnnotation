@@ -144,7 +144,7 @@ foreach my $probeId (keys %dataProbes) {
 		my $biotypes2  = join("|", @{$dataProbes{$probeId}{$uniqueSymbol}{"biotypes2"}});
 		my $biotypes   = join("|", @{$dataProbes{$probeId}{$uniqueSymbol}{"biotypes"}});
 		my $symbols    = join("|", @{$dataProbes{$probeId}{$uniqueSymbol}{"symbols"}});
-		print join("\t", $probeId, $uniqueSymbol, $ensemblIds, $biotypes2, $biotypes, $symbols), "\n";
+		print join("\t", $probeId, $uniqueSymbol, $ensemblIds, $biotypes2, $biotypes, $symbols, $platform), "\n";
 	}
 }
 
