@@ -57,21 +57,25 @@ then
 		#echo "$dbdir/genome/fa/${alias}.fa" >> $dbdir/downloads_path.txt
 	fi
 
-	echo "Do you want index genome? (Yes or No):"
-	read indexGenome
-	#indexGenome="Yes"
-	if [ $indexGenome = "Yes" ]
+	#echo "Do you want index genome? (Yes or No):"
+	#read indexGenome
+	indexGenome="Yes"
+	if [ $indexGenome = "Yes" ] || [ $indexGenome = "yes" ] || [ $indexGenome = "y" ]
 	then
 		#echo "How many cores to the processing?"
 		#read cores
 		totalcores=`cat /proc/cpuinfo | grep "cpu cores" | sort | uniq | sed 's/.*\: //'`
 		cores=$((totalcores-1))
 
-		for mapper in bowtie1 bowtie2
+		#for mapper in bowtie1 bowtie2
+		for mapper in bowtie2
 		do
 			echo "Indexing genome to $mapper"
 			./indexer --mapper "$mapper" --genome "$dbdir/genome/fa/${alias}.fa" --base $alias --output-dir $dbdir/genome/index/$mapper/ --threads $cores
 		done
+	else
+		echo "Invalid option! Try again..."
+		exit
 	fi
 fi
 
