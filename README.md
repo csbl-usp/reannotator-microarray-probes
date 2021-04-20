@@ -77,7 +77,7 @@ $ conda install wget
 
 ## Clone the reannotator github repository
 ```
-$ git clone https://github.com/nicolau/reannotator_microarray_probes.git
+$ git clone https://github.com/csbl-usp/reannotator_microarray_probes.git
 ```
 
 ### Entry on the source directory it contains all scripts
