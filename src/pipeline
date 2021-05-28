@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ ! -L perl ]
+then
+        perlPath=`which perl`
+        ln -s $perlPath perl
+fi
+
 platforms=../platforms
 outputDir=../results
 mapper=bowtie2
