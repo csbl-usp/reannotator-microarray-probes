@@ -12,9 +12,9 @@ Pipeline for microarray probes sequence reannotation.
 
 ## Environment preparation
 
-### In your Terminal download the Miniconda installer
+### In your command Terminal, download the Miniconda installer:
 ```
-$ cd <specify a directory>
+$ cd <specify a directory path>
 $ wget -O Miniconda3.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ```
 or you can use the curl command
@@ -29,7 +29,7 @@ $ curl -sL \
 $ bash Miniconda3.sh
 ```
 
-### Conda installation process
+### Miniconda3 installation process
 ```
 Welcome to Miniconda3 py38_4.9.2
 
@@ -56,7 +56,7 @@ by running conda init? [yes|no]
 [no] >>> yes
 ```
 
-### After installation, delete the installer:
+### After Miniconda3 installation, delete the installer file:
 ```
 rm Miniconda3.sh
 ```
@@ -69,7 +69,7 @@ rm Miniconda3.sh
 $ conda update conda
 ```
 
-### Finally, install the program wget and git using Conda to download any files using CLI:
+### Finally, install the programs wget and git using Conda to download any files:
 ```
 $ conda install git
 $ conda install wget
@@ -85,7 +85,7 @@ $ git clone https://github.com/csbl-usp/reannotator_microarray_probes.git
 $ cd reannotator_microarray_probes/src/
 ```
 
-### Change file permission for "execution" mode
+### Change the files permission for "execution" mode
 ```
 $ chmod 755 *
 ```
@@ -95,16 +95,16 @@ $ chmod 755 *
 $ conda env create --file ../parameters/reannotator_env.yml
 $ conda activate reannotator
 ```
-**Important!!!** Make sure the reannotator environment are active or execute the command 'conda activate reannotator'.
+**Important!!!** Make sure the reannotator environment are active or execute the command 'conda activate reannotator' for it.
 
 
-## Prepare human genome sequence and mapper index
+## Prepare the human genome sequence and mapper index
 ### Build a human genome directory
 ```
 $ ./createReferenceDirectory
 ```
 The reference genome used for this pipeline is release-103 from ENSEMBL database.
-**Under construction** How to change the human reference genome for newer or oldest version.
+**Under construction** How to change the human reference genome for new or old version.
 
 ## Prepare GPL sequence file. Show a platforms structure with tree command:
 ```
@@ -139,7 +139,7 @@ $ head ../platforms/GPL10558/probe_sequence.tsv
 "ILMN_1343064"  "GCCCCGTATTCAGTGTGGCTGATTTGTATTGTCAGAAGTTGTTTTTACGT"
 ```
 
-Based on existent platforms directories, create a new directories for newer platforms.
+Based on the existent platforms directories, create a new directories for the new platforms.
 
 ## To start all processes to reannotation of each probes, execute the pipeline
 ```
