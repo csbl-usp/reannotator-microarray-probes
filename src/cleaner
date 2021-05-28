@@ -2,4 +2,4 @@
 
 mode=$1
 
-rm ../results/*/*
+rm -rf ../results/*
