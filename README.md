@@ -14,19 +14,19 @@ Pipeline for microarray probes sequence reannotation.
 
 ### In your command Terminal, download the Miniconda installer:
 ```
-$ cd <specify a directory path>
-$ wget -O Miniconda3.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+cd <specify a directory path>
+wget -O Miniconda3.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ```
 or you can use the curl command
 ```
-$ curl -sL \
+curl -sL \
   "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" > \
   "Miniconda3.sh"
 ```
 
 ### Install the Miniconda by the command line:
 ```
-$ bash Miniconda3.sh
+bash Miniconda3.sh
 ```
 
 ### Miniconda3 installation process
@@ -66,34 +66,34 @@ rm Miniconda3.sh
 
 ### Update Conda using the command line:
 ```
-$ conda update conda
+conda update conda
 ```
 
 ### Finally, install the programs wget and git using Conda to download any files:
 ```
-$ conda install git
-$ conda install wget
+conda install git
+conda install wget
 ```
 
 ## Clone the reannotator github repository
 ```
-$ git clone https://github.com/csbl-usp/reannotator_microarray_probes.git
+git clone https://github.com/csbl-usp/reannotator_microarray_probes.git
 ```
 
 ### Entry on the source directory it contains all scripts
 ```
-$ cd reannotator_microarray_probes/src/
+cd reannotator_microarray_probes/src/
 ```
 
 ### Change the files permission for "execution" mode
 ```
-$ chmod 755 *
+chmod 755 *
 ```
 
 ### Build the conda environment for all required packages for the pipeline
 ```
-$ conda env create --file ../parameters/reannotator_env.yml
-$ conda activate reannotator
+conda env create --file ../parameters/reannotator_env.yml
+conda activate reannotator
 ```
 **Important!!!** Make sure the reannotator environment are active or execute the command 'conda activate reannotator' for it.
 
@@ -101,14 +101,14 @@ $ conda activate reannotator
 ## Prepare the human genome sequence and mapper index
 ### Build a human genome directory
 ```
-$ ./createReferenceDirectory
+./createReferenceDirectory
 ```
 The reference genome used for this pipeline is release-103 from ENSEMBL database.
 **Under construction** How to change the human reference genome for new or old version.
 
 ## Prepare GPL sequence file. Show a platforms structure with tree command:
 ```
-$ tree ../platforms/
+tree ../platforms/
 ```
 
 Strutucure of GPL directory.
@@ -124,7 +124,7 @@ Strutucure of GPL directory.
 
 The content of probe_sequence.tsv should be "ID" and "SEQUENCE" columns.
 ```
-$ head ../platforms/GPL10558/probe_sequence.tsv
+head ../platforms/GPL10558/probe_sequence.tsv
 ```
 ```
 "ID"    "SEQUENCE"
@@ -143,12 +143,12 @@ Based on the existent platforms directories, create a new directories for the ne
 
 ## To start all processes to reannotation of each probes, execute the pipeline
 ```
-$ ./pipeline
+./pipeline
 ```
 
 ## The results of output Reannotation are stored in all_annotated_probes.tsv file!
 ```
-$ head ../results/all_annotated_probes.tsv
+head ../results/all_annotated_probes.tsv
 ```
 ```
 ProbeID Symbol  EnsemblIDs      Biotypes2       Biotypes1       Symbols
@@ -178,22 +178,22 @@ $ docker pull csblusp/reannotator
 
 ### Create a Docker container for reannotator image
 ```
-$ docker run -d -it --rm --name reannotator [-v <put your directory path here!>:/home] csblusp/reannotator
+docker run -d -it --rm --name reannotator [-v <put your directory path here!>:/home] csblusp/reannotator
 ```
 -v correspond to volumes parameter to link local directory to container directory and access/download files from the Docker container. Check out more details at the Docker volumes website: https://docs.docker.com/storage/volumes/
 
 ### Entry on the Docker container of reannotator
 ```
-$ docker exec -it reannotator bash
+docker exec -it reannotator bash
 ```
 
 ### Entry on the reannotator pipeline directory
 ```
-$ cd /home/reannotator_microarray_probes
-$ git pull
+cd /home/reannotator_microarray_probes
+git pull
 
-$ cd /home/reannotator_microarray_probes/src
-$ conda activate reannotator
+cd /home/reannotator_microarray_probes/src
+conda activate reannotator
 ```
 
 Execute same steps from the [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
