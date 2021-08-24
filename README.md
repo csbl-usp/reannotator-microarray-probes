@@ -162,6 +162,14 @@ ILMN_1734542    OVGP1   ENSG00000085465 protein_coding  gene    OVGP1
 ILMN_1672623    LRRC77P ENST00000481578|ENST00000459923 processed_transcript|processed_transcript       lnc_RNA|lnc_RNA LRRC77P-206|LRRC77P-201
 ILMN_1666200    SHLD2   ENSG00000122376 protein_coding  gene    SHLD2
 ```
+## Cleaning result to execute the pipeline again!!
+If you need to execute the pipeline for the same platforms, you need execute the cleaner script before:
+
+```
+./cleaner
+```
+If you add new platforms after any execution, the pipeline will analyze the new plataforms only.
+
 
 # Use the Docker image for reannotator pipeline
 
