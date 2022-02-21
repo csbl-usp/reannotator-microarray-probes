@@ -12,12 +12,12 @@ Pipeline for microarray probes sequence reannotation.
 
 ## Environment preparation
 
-### In your command Terminal, download the Miniconda installer:
+### In your command line Terminal, download the Miniconda installer:
 ```
 cd <specify a directory path>
 wget -O Miniconda3.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ```
-or you can use the curl command
+or you can use the curl command line
 ```
 curl -sL \
   "https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh" > \
@@ -49,7 +49,7 @@ Miniconda3 will now be installed into this location:
   - Or specify a different location below
 
 [/root/miniconda3] >>> 
-PREFIX=<Define your directory here!>
+PREFIX=<Define your directory here! or enter to keep /root/miniconda3 directory>
 
 Do you wish the installer to initialize Miniconda3
 by running conda init? [yes|no]
@@ -61,7 +61,7 @@ by running conda init? [yes|no]
 rm Miniconda3.sh
 ```
 
-**Important!!!** Close and open your terminal to activated the conda base environment.
+**Important!!!** Close and reopen your terminal to activate the conda base environment.
 
 
 ### Update Conda using the command line:
@@ -69,7 +69,7 @@ rm Miniconda3.sh
 conda update conda
 ```
 
-### Finally, install the programs wget and git using Conda to download any files:
+### Finally, install the programs wget and git using Conda command:
 ```
 conda install git
 conda install wget
@@ -95,7 +95,7 @@ chmod 755 *
 conda env create --file ../parameters/reannotator_env.yml
 conda activate reannotator
 ```
-**Important!!!** Make sure the reannotator environment are active or execute the command 'conda activate reannotator' for it.
+**Important!!!** Make sure the reannotator environment are actived or execute the command 'conda activate reannotator' for it.
 
 
 ## Prepare the human genome sequence and mapper index
@@ -103,6 +103,7 @@ conda activate reannotator
 ```
 ./createReferenceDirectory
 ```
+
 The reference genome used for this pipeline is release-103 from ENSEMBL database.
 **Under construction** How to change the human reference genome for new or old version.
 
