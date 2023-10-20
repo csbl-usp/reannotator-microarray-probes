@@ -4,11 +4,13 @@ Pipeline for microarray probes sequence reannotation.
 
 ## Summary
 1. [Environment preparation](#environment-preparation)
-2. [Clone a github repository](#clone-a-github-repository)
+2. [Clone a GitHub repository](#clone-a-github-repository)
 3. [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
 4. [Prepare GPL sequence file](#prepare-gpl-sequence-file)
 5. [Execute the pipeline](#execute-the-pipeline)
 
+## Workflow
+<img src="./data/img/workflow_v1.png" width="600">
 
 ## Environment preparation
 
