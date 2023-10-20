@@ -37,7 +37,7 @@ Welcome to Miniconda3 py38_4.9.2
 
 In order to continue the installation process, please review the license
 agreement.
-Please, press ENTER to continue
+Please press ENTER to continue.
 >>>
 
 Do you accept the license terms? [yes|no]
@@ -63,7 +63,7 @@ by running conda init? [yes|no]
 rm Miniconda3.sh
 ```
 
-**Important!!!** Close and reopen your terminal to activate the conda base environment.
+**Important!!!** Close and reopen your terminal to activate the Conda base environment.
 
 
 ### Update Conda using the command line:
@@ -71,13 +71,13 @@ rm Miniconda3.sh
 conda update conda
 ```
 
-### Finally, install the programs wget and git using Conda command:
+### Finally, install the programs wget and git using the Conda command:
 ```
 conda install git
 conda install wget
 ```
 
-## Clone the reannotator github repository
+## Clone the reannotator GitHub repository
 ```
 git clone https://github.com/csbl-usp/reannotator-microarray-probes.git
 ```
@@ -87,7 +87,7 @@ git clone https://github.com/csbl-usp/reannotator-microarray-probes.git
 cd reannotator-microarray-probes/src/
 ```
 
-### Change the files permission for "execution" mode
+### Change the file permission for "execution" mode
 ```
 chmod 755 *
 ```
@@ -107,9 +107,42 @@ conda activate reannotator
 ```
 
 The reference genome used for this pipeline is release-103 from ENSEMBL database.
-**Under construction** How to change the human reference genome for new or old version.
 
-## Prepare GPL sequence file. Show a platforms structure with tree command:
+## Change the reference genome
+### Open the create database folders
+Edit the script file src/createReferenceDirectory, and modify these lines:
+```
+...
+# You can change it to any string. Just avoid starting with numbers and the string containing spaces
+alias=hsapiens
+
+...
+
+# Change all occurences of 'Homo_sapiens' for your reference genome.
+touch $dbdir/genome/fa/Homo_sapiens_chrs.fa
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y MT
+  do
+	  wget -O $dbdir/genome/fa/Homo_sapiens_chr${i}.fa.gz http://ftp.ensembl.org/pub/release-103/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna_sm.chromosome.${i}.fa.gz
+		gunzip $dbdir/genome/fa/Homo_sapiens_chr${i}.fa.gz
+		cat $dbdir/genome/fa/Homo_sapiens_chr${i}.fa >> $dbdir/genome/fa/Homo_sapiens_chrs.fa
+		rm $dbdir/genome/fa/Homo_sapiens_chr${i}.fa
+  done
+
+	cd $dbdir/genome/fa/
+	ln -s Homo_sapiens_chrs.fa ${alias}.fa
+
+...
+
+# Change all occurences of 'Homo_sapiens' for your reference genome.
+wget -O $dbdir/annotation/Homo_sapiens.gff.gz http://ftp.ensembl.org/pub/release-103/gff3/homo_sapiens/Homo_sapiens.GRCh38.103.chr.gff3.gz
+gunzip $dbdir/annotation/Homo_sapiens.gff.gz
+cd $dbdir/annotation
+ln -s Homo_sapiens.gff ${alias}.gff
+```
+
+**Under construction** How to change the human reference genome for new or old versions.
+
+## Prepare GPL sequence file. Show a platform structure with a tree command:
 ```
 tree ../platforms/
 ```
@@ -142,9 +175,9 @@ head ../platforms/GPL10558/probe_sequence.tsv
 "ILMN_1343064"  "GCCCCGTATTCAGTGTGGCTGATTTGTATTGTCAGAAGTTGTTTTTACGT"
 ```
 
-Based on the existent platforms directories, create a new directories for the new platforms.
+Based on the existent platforms directories, create a new directory for the new platforms.
 
-## To start all processes to reannotation of each probes, execute the pipeline
+## To start all processes to reannotation of each probe, execute the pipeline
 ```
 ./pipeline
 ```
@@ -166,21 +199,21 @@ ILMN_1672623    LRRC77P ENST00000481578|ENST00000459923 processed_transcript|pro
 ILMN_1666200    SHLD2   ENSG00000122376 protein_coding  gene    SHLD2
 ```
 ## Cleaning result to execute the pipeline again!!
-If you need to execute the pipeline for the same platforms, you need execute the cleaner script before:
+If you need to execute the pipeline for the same platforms, you need to execute the cleaner script before:
 
 ```
 ./cleaner
 ```
-If you add new platforms after any execution, the pipeline will analyze the new plataforms only.
+If you add new platforms after any execution, the pipeline will analyze the new platform only.
 
 
 # Use the Docker image for reannotator pipeline
 
 ## Docker installation
 
-Access the website https://www.docker.com/get-started for install docker program in Windows, MacOS or Linux systems.
+Access the website https://www.docker.com/get-started to install the docker program in Windows, MacOS or Linux systems.
 
-## Download the reannotator image from Docker hub. Access the terminal and execute the command line
+## Download the reannotator image from the Docker hub. Access the terminal and execute the command line.
 ```
 $ docker pull csblusp/reannotator
 ```
@@ -191,7 +224,7 @@ $ docker pull csblusp/reannotator
 ```
 docker run -d -it --rm --name reannotator [-v <put your directory path here!>:/home] csblusp/reannotator
 ```
--v correspond to volumes parameter to link local directory to container directory and access/download files from the Docker container. Check out more details at the Docker volumes website: https://docs.docker.com/storage/volumes/
+-v corresponds to the volumes parameter to link the local directory to the container directory and access/download files from the Docker container. Check out more details at the Docker volumes website: https://docs.docker.com/storage/volumes/
 
 ### Entry on the Docker container of reannotator
 ```
@@ -207,7 +240,7 @@ cd /home/reannotator_microarray_probes/src
 conda activate reannotator
 ```
 
-Execute same steps from the [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
+Execute the same steps from the [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
 
 
 ## For Windows system
