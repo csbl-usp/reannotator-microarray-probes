@@ -79,6 +79,9 @@ then
 	fi
 fi
 
+# Coming back to the src folder before to run the Indexer script
+cd ../../../../src/
+
 #echo "Do you want download genome annotation now or manually later? (Now or Later):"
 #read downloadAnnotation
 downloadAnnotation="Now"
