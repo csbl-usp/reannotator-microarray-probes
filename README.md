@@ -4,10 +4,11 @@ Pipeline for microarray probes sequence reannotation.
 
 ## Summary
 1. [Environment preparation](#environment-preparation)
-2. [Clone a GitHub repository](#clone-a-github-repository)
-3. [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
-4. [Prepare GPL sequence file](#prepare-gpl-sequence-file)
-5. [Execute the pipeline](#execute-the-pipeline)
+2. [Clone the reannotator GitHub repository](#clone-the-reannotator-github-repository)
+3. [Prepare the human genome sequence and mapper index](#prepare-the-human-genome-sequence-and-mapper-index)
+4. [Change the reference genome](#change-the-reference-genome)
+5. [Prepare GPL sequence file](#prepare-gpl-sequence-file)
+6. [To start all processes to reannotation of each probe, execute the pipeline](#to-start-all-processes-to-reannotation-of-each-probe,-execute-the-pipeline)
 
 ## Workflow
 <img src="./data/img/workflow_v1.png" width="600">
@@ -142,7 +143,8 @@ ln -s Homo_sapiens.gff ${alias}.gff
 
 **Under construction** How to change the human reference genome for new or old versions.
 
-## Prepare GPL sequence file. Show a platform structure with a tree command:
+## Prepare GPL sequence file
+Show a platform structure with a tree command:
 ```
 tree ../platforms/
 ```
