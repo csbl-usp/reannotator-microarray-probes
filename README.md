@@ -8,7 +8,9 @@ Pipeline for microarray probes sequence reannotation.
 3. [Prepare the human genome sequence and mapper index](#prepare-the-human-genome-sequence-and-mapper-index)
 4. [Change the reference genome](#change-the-reference-genome)
 5. [Prepare GPL sequence file](#prepare-gpl-sequence-file)
-6. [To start all processes to reannotation of each probe, execute the pipeline](#to-start-all-processes-to-reannotation-of-each-probe,-execute-the-pipeline)
+6. [To start all processes to reannotation of each probe](#to-start-all-processes-to-reannotation-of-each-probe)
+7. [Docker installation](#docker-installation)
+8. [For Linux and MacOS](#for-linux-and-macos)
 
 ## Workflow
 <img src="./data/img/workflow_v1.png" width="600">
@@ -179,7 +181,8 @@ head ../platforms/GPL10558/probe_sequence.tsv
 
 Based on the existent platforms directories, create a new directory for the new platforms.
 
-## To start all processes to reannotation of each probe, execute the pipeline
+## To start all processes to reannotation of each probe
+Execute the pipeline
 ```
 ./pipeline
 ```
@@ -242,7 +245,7 @@ cd /home/reannotator_microarray_probes/src
 conda activate reannotator
 ```
 
-Execute the same steps from the [Prepare human genome sequence and mapper index](#prepare-human-genome-sequence-and-mapper-index)
+Execute the same steps from the [Prepare the human genome sequence and mapper index](#prepare-the-human-genome-sequence-and-mapper-index)
 
 
 ## For Windows system
